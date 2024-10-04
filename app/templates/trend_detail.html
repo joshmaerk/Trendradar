@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}{{ trend.title }} - Strategisches Trendradar{% endblock %}
+
+{% block content %}
+<h1 class="my-4">{{ trend.title }}</h1>
+
+<p><strong>Beschreibung:</strong> {{ trend.description }}</p>
+<p><strong>Kategorien:</strong>
+    {% for category in trend.categories %}
+        {{ category.name }}{% if not loop.last %}, {% endif %}
+    {% endfor %}
+</p>
+<p><strong>Zeithorizont:</strong> {{ trend.time_horizon }}</p>
+<p><strong>Phase:</strong> {{ trend.phase }}</p>
+<h4>Bewertungen:</h4>
+<ul>
+    <li>Relevance: {{ trend.relevance }}</li>
+    <li>Market Potential: {{ trend.market_potential }}</li>
+    <li>Likelihood: {{ trend.likelihood }}</li>
+    <li>Sustainability: {{ trend.sustainability }}</li>
+    <li>Maturity Level: {{ trend.maturity_level }}</li>
+</ul>
+
+<a href="{{ url_for('main.edit_trend', trend_id=trend.id) }}" class="btn btn-warning">Trend bearbeiten</a>
+<form action="{{ url_for('main.delete_trend', trend_id=trend.id) }}" method="post" style="display:inline;">
+    <button type="submit" class="btn btn-danger" onclick="return confirm('Sind Sie sicher, dass Sie diesen Trend löschen möchten?');">Trend löschen</button>
+</form>
+{% endblock %}

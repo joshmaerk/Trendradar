@@ -1,0 +1,38 @@
+# Ignore macOS system files
+.DS_Store
+
+# Ignore node_modules directory
+node_modules/
+
+# Ignore log files
+*.log
+
+# Ignore environment variable files
+.env
+
+# Ignore Docker files
+docker-compose.override.yml
+docker-compose.override.yaml
+docker-compose.local.yml
+docker-compose.local.yaml
+
+# Ignore build directories
+build/
+dist/
+
+# Ignore coverage reports
+coverage/
+
+# Ignore temporary files
+tmp/
+temp/
+
+# Ignore IDE specific files
+.vscode/
+.idea/
+
+# Ignore Python cache files
+__pycache__/
+
+# Ignore SQLite database file
+trends.db

@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+
+{% block title %}Übersicht - Strategisches Trendradar{% endblock %}
+
+{% block content %}
+    <h1 class="my-4">Strategisches Trendradar</h1>
+
+    <form method="post" action="{{ url_for('main.index') }}">
+        <div class="form-group">
+            <label for="title">Titel des Trends:</label>
+            <input type="text" name="title" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="description">Beschreibung:</label>
+            <textarea name="description" class="form-control" rows="3"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="categories">Kategorien:</label>
+            <select name="categories" class="form-control" multiple>
+                {% for category in categories %}
+                <option value="{{ category.id }}">{{ category.name }}</option>
+                {% endfor %}
+            </select>
+            <small class="form-text text-muted">Halten Sie die Strg-Taste gedrückt, um mehrere Kategorien auszuwählen.</small>
+        </div>
+        <div class="form-group">
+            <label for="phase">Phase:</label>
+            <select name="phase" class="form-control">
+                {% for phase_option in phases %}
+                <option value="{{ phase_option }}">{{ phase_option }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="time_horizon">Zeithorizont:</label>
+            <select name="time_horizon" class="form-control">
+                {% for horizon in time_horizons %}
+                <option value="{{ horizon }}">{{ horizon }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <!-- Bewertung (1-10) -->
+<h4>Bewertung (1-10):</h4>
+<div class="form-row">
+    <!-- Relevance -->
+    <div class="form-group col-md-2">
+        <label for="relevance">Relevance: <span id="relevance_value">5</span></label>
+        <input type="range" name="relevance" class="form-control-range" min="1" max="10" value="5" id="relevance" oninput="updateValue('relevance')">
+    </div>
+    <!-- Market Potential -->
+    <div class="form-group col-md-2">
+        <label for="market_potential">Market Potential: <span id="market_potential_value">5</span></label>
+        <input type="range" name="market_potential" class="form-control-range" min="1" max="10" value="5" id="market_potential" oninput="updateValue('market_potential')">
+    </div>
+    <!-- Likelihood -->
+    <div class="form-group col-md-2">
+        <label for="likelihood">Likelihood: <span id="likelihood_value">5</span></label>
+        <input type="range" name="likelihood" class="form-control-range" min="1" max="10" value="5" id="likelihood" oninput="updateValue('likelihood')">
+    </div>
+    <!-- Sustainability -->
+    <div class="form-group col-md-2">
+        <label for="sustainability">Sustainability: <span id="sustainability_value">5</span></label>
+        <input type="range" name="sustainability" class="form-control-range" min="1" max="10" value="5" id="sustainability" oninput="updateValue('sustainability')">
+    </div>
+    <!-- Maturity Level -->
+    <div class="form-group col-md-2">
+        <label for="maturity_level">Maturity Level: <span id="maturity_level_value">5</span></label>
+        <input type="range" name="maturity_level" class="form-control-range" min="1" max="10" value="5" id="maturity_level" oninput="updateValue('maturity_level')">
+    </div>
+</div>
+
+<!-- JavaScript-Funktion -->
+<script>
+function updateValue(id) {
+    var slider = document.getElementById(id);
+    var display = document.getElementById(id + '_value');
+    display.innerHTML = slider.value;
+}
+</script>
+        <button type="submit" class="btn btn-primary">Trend hinzufügen</button>
+    </form>
+
+    <h2 class="my-4">Vorhandene Trends</h2>
+    <table class="table table-bordered">
+        <thead class="thead-light">
+            <tr>
+                <th>Titel</th>
+                <th>Kategorien</th>
+                <th>Zeithorizont</th>
+                <th>Phase</th>
+                <th>Bewertungen</th>
+                <th>Aktionen</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for trend in trends %}
+            <tr>
+                <td>
+                    <strong>{{ trend.title }}</strong><br>
+                    <small>{{ trend.description }}</small>
+                </td>
+                <td>
+                    {% for category in trend.categories %}
+                        {{ category.name }}{% if not loop.last %}, {% endif %}
+                    {% endfor %}
+                </td>
+                <td>{{ trend.time_horizon }}</td>
+                <td>{{ trend.phase }}</td>
+                <td>
+                    <ul class="list-unstyled mb-0">
+                        <li>Relevance: {{ trend.relevance }}</li>
+                        <li>Market Potential: {{ trend.market_potential }}</li>
+                        <li>Likelihood: {{ trend.likelihood }}</li>
+                        <li>Sustainability: {{ trend.sustainability }}</li>
+                        <li>Maturity Level: {{ trend.maturity_level }}</li>
+                    </ul>
+                </td>
+                <td>
+                    <a href="{{ url_for('main.edit_trend', trend_id=trend.id) }}" class="btn btn-sm btn-warning mb-1">Bearbeiten</a>
+                    <form action="{{ url_for('main.delete_trend', trend_id=trend.id) }}" method="post" style="display:inline;">
+                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Sind Sie sicher, dass Sie diesen Trend löschen möchten?');">Löschen</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+   <!-- Visualisierung -->
+<div class="my-4" style="width: 100%; height: 0; padding-bottom: 50%;">
+    {{ graph_div|safe }}
+</div>
+    {% endblock %}

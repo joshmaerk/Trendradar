@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  web:
+    image: flask:latest
+    build: .
+    ports:
+      - "5000:5000"
+    volumes:
+      - .:/app
+    environment:
+      FLASK_ENV: development
+      DATABASE_URL: postgres://postgres:password@db:5432/mydatabase
+    command: flask run --host=0.0.0.0
+
+  redis:
+    image: "redis:alpine"
+
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: mydatabase
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:

@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}Trend bearbeiten - {{ trend.title }}{% endblock %}
+
+{% block content %}
+<h1 class="my-4">Trend bearbeiten</h1>
+
+    <form method="post" action="{{ url_for('main.edit_trend', trend_id=trend.id) }}">
+        <div class="form-group">
+            <label for="title">Titel des Trends:</label>
+            <input type="text" name="title" class="form-control" value="{{ trend.title }}" required>
+        </div>
+        <div class="form-group">
+            <label for="description">Beschreibung:</label>
+            <textarea name="description" class="form-control" rows="3">{{ trend.description }}</textarea>
+        </div>
+        <div class="form-group">
+            <label for="categories">Kategorien:</label>
+            <select name="categories" class="form-control" multiple>
+                {% for category in categories %}
+                <option value="{{ category.id }}" {% if category in trend.categories %}selected{% endif %}>{{ category.name }}</option>
+                {% endfor %}
+            </select>
+            <small class="form-text text-muted">Halten Sie die Strg-Taste gedrückt, um mehrere Kategorien auszuwählen.</small>
+        </div>
+        <div class="form-group">
+            <label for="phase">Phase:</label>
+            <select name="phase" class="form-control">
+                {% for phase_option in phases %}
+                <option value="{{ phase_option }}" {% if trend.phase == phase_option %}selected{% endif %}>{{ phase_option }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="time_horizon">Zeithorizont:</label>
+            <select name="time_horizon" class="form-control">
+                {% for horizon in time_horizons %}
+                <option value="{{ horizon }}" {% if trend.time_horizon == horizon %}selected{% endif %}>{{ horizon }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <!-- Bewertung (1-10) -->
+<h4>Bewertung (1-10):</h4>
+<div class="form-row">
+    <!-- Relevance -->
+    <div class="form-group col-md-2">
+        <label for="relevance">Relevance: <span id="relevance_value">{{ trend.relevance }}</span></label>
+        <input type="range" name="relevance" class="form-control-range" min="1" max="10" value="{{ trend.relevance }}" id="relevance" oninput="updateValue('relevance')">
+    </div>
+    <!-- Market Potential -->
+    <div class="form-group col-md-2">
+        <label for="market_potential">Market Potential: <span id="market_potential_value">{{ trend.market_potential }}</span></label>
+        <input type="range" name="market_potential" class="form-control-range" min="1" max="10" value="{{ trend.market_potential }}" id="market_potential" oninput="updateValue('market_potential')">
+    </div>
+    <!-- Likelihood -->
+    <div class="form-group col-md-2">
+        <label for="likelihood">Likelihood: <span id="likelihood_value">{{ trend.likelihood }}</span></label>
+        <input type="range" name="likelihood" class="form-control-range" min="1" max="10" value="{{ trend.likelihood }}" id="likelihood" oninput="updateValue('likelihood')">
+    </div>
+    <!-- Sustainability -->
+    <div class="form-group col-md-2">
+        <label for="sustainability">Sustainability: <span id="sustainability_value">{{ trend.sustainability }}</span></label>
+        <input type="range" name="sustainability" class="form-control-range" min="1" max="10" value="{{ trend.sustainability }}" id="sustainability" oninput="updateValue('sustainability')">
+    </div>
+    <!-- Maturity Level -->
+    <div class="form-group col-md-2">
+        <label for="maturity_level">Maturity Level: <span id="maturity_level_value">{{ trend.maturity_level }}</span></label>
+        <input type="range" name="maturity_level" class="form-control-range" min="1" max="10" value="{{ trend.maturity_level }}" id="maturity_level" oninput="updateValue('maturity_level')">
+    </div>
+</div>
+
+<!-- JavaScript-Funktion -->
+<script>
+function updateValue(id) {
+    var slider = document.getElementById(id);
+    var display = document.getElementById(id + '_value');
+    display.innerHTML = slider.value;
+}
+</script>
+        <button type="submit" class="btn btn-primary">Änderungen speichern</button>
+        <a href="{{ url_for('main.index') }}" class="btn btn-secondary">Abbrechen</a>
+    </form>
+    {% endblock %}
